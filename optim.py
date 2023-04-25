@@ -1,21 +1,21 @@
 import numpy as np
 
 
-def nelder_mead(f, x0, alpha=1, gamma=2, rho=0.5, sigma=0.5, tol=1e-6, maxiter=1000):
+def nelder_mead(f, x0, alpha=1, gamma=2, rho=0.5, sigma=0.5, tol=1e-6, maxiter=1000, dx=1):
     '''
     f - целевая функция
     x0 - начальная точка
     alpha - коэффициент отражения
     gamma - коэффициент растяжения
     rho - коэффициент сжатия
-    sigma - коэффициент уменьшения
+    sigma - коэффициент глобального сжатия
     tol - допустимая точность
     '''
-    # Задаем начальные точки
+    # Создаём начальный симплекс (n+1 мерный)
     simplex = [x0]
     for i in range(len(x0)):
         point = x0.copy()
-        point[i] = point[i] + 1
+        point[i] = point[i] + dx
         simplex.append(point)
 
     # Основной цикл
@@ -30,6 +30,7 @@ def nelder_mead(f, x0, alpha=1, gamma=2, rho=0.5, sigma=0.5, tol=1e-6, maxiter=1
         xr = centroid + alpha * (centroid - simplex[-1])
         if f(simplex[0]) <= f(xr) < f(simplex[-2]):
             simplex[-1] = xr
+
         # Шаг 4: растяжение
         elif f(xr) < f(simplex[0]):
             xe = centroid + gamma * (xr - centroid)
@@ -43,7 +44,7 @@ def nelder_mead(f, x0, alpha=1, gamma=2, rho=0.5, sigma=0.5, tol=1e-6, maxiter=1
             if f(xc) < f(simplex[-1]):
                 simplex[-1] = xc
             else:
-                # Шаг 6: уменьшение глобальное сжатие симплекса к точке с наименьшим значением
+                # Шаг 6: глобальное сжатие симплекса к точке с наименьшим значением
                 for i in range(1, len(simplex)):
                     simplex[i] = simplex[0] + sigma * (simplex[i] - simplex[0])
 
