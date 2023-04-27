@@ -42,10 +42,59 @@ def create_func(k_targ, ka, kb, kc, kd, a_min, a_max, b_min, b_max, c_min, c_max
         # f_res += k * max(-(d_max-(sum([xi*gi for xi, gi in zip(xd, d)]))), 0) ** p
 
         return f_res
-
     return inner_method
 
-# получаем данные из json (k_targ)
+
+def create_func_2(k_targ, ka, kb, kc, kd, a_min, a_max, b_min, b_max, c_min, c_max, d_min, d_max, k=1e4, p=2):
+    def inner_method(x):
+        take_first = lambda ar, n: (ar[:n], ar[n:])
+
+        # TODO проверку на неодинаковость размерности
+        xa, x = take_first(x, len(ka))
+        xb, x = take_first(x, len(kb))
+        xc, x = take_first(x, len(kc))
+        xd, x = take_first(x, len(kd))
+
+        k_calc = 0
+        k_calc += sum([xi*ki for xi, ki in zip(xa, ka)])
+        k_calc += sum([xi*ki for xi, ki in zip(xb, kb)])
+        k_calc += sum([xi*ki for xi, ki in zip(xc, kc)])
+        k_calc += sum([xi*ki for xi, ki in zip(xd, kd)])
+
+
+        f_res = (k_calc-k_targ)**2
+
+        for xx in [xa, xb, xc, xd]:
+            f_res += k * sum([max(-xi, 0) ** p for xi in xx])
+        # for x in [a, b, c, d]:
+        #     f_res += k * sum([max(-y, 0) ** p for y in x])
+        # for x in [a, b, c, d]:
+        #     f_res += k * sum([max(y-100, 0) ** p for y in x])
+
+        # k1 = 1
+        # for xx in [xa, xb, xc, xd]:
+        #     prod = k1
+        #     for xi in xx:
+        #         prod *= xi
+        #     f_res += prod
+
+        f_res += k * max(-(sum([xi for xi in xa])-a_min), 0) ** p
+
+        # f_res += k * max(-(sum([xi*gi for xi, gi in zip(xa, a)])-a_min), 0) ** p
+        # f_res += k * max(-(sum([xi*gi for xi, gi in zip(xb, b)])-b_min), 0) ** p
+        # f_res += k * max(-(sum([xi*gi for xi, gi in zip(xc, c)])-c_min), 0) ** p
+        # f_res += k * max(-(sum([xi*gi for xi, gi in zip(xd, d)])-d_min), 0) ** p
+        #
+        # f_res += k * max(-(a_max-(sum([xi*gi for xi, gi in zip(xa, a)]))), 0) ** p
+        # f_res += k * max(-(b_max-(sum([xi*gi for xi, gi in zip(xb, b)]))), 0) ** p
+        # f_res += k * max(-(c_max-(sum([xi*gi for xi, gi in zip(xc, c)]))), 0) ** p
+        # f_res += k * max(-(d_max-(sum([xi*gi for xi, gi in zip(xd, d)]))), 0) ** p
+
+        return f_res
+    return inner_method
+
+
+# Получаем данные из json (k_targ)
 # считаем количество параметров для формирования симплекса
 # формируем функцию
 # надо сделать шаблон
@@ -78,10 +127,10 @@ d_min = 50
 d_max = 500
 
 
-ff = create_func(k_targ, ka, kb, kc, kd, a_min, a_max, b_min, b_max, c_min, c_max, d_min, d_max)
-x0 = np.zeros((len(ka)+len(kb)+len(kc)+len(kd))*2)
+ff = create_func_2(k_targ, ka, kb, kc, kd, a_min, a_max, b_min, b_max, c_min, c_max, d_min, d_max)
+x0 = np.zeros((len(ka)+len(kb)+len(kc)+len(kd))) #*2
 
-res, iter = nelder_mead(ff, x0, maxiter=12000)
+res, iter = nelder_mead(ff, x0, maxiter=12000, dx=10)
 
 
 def take_first(ar, n):
@@ -94,19 +143,24 @@ xa, res = take_first(res, len(ka))
 xb, res = take_first(res, len(kb))
 xc, res = take_first(res, len(kc))
 xd, res = take_first(res, len(kd))
-a, res = take_first(res, len(ka))
-b, res = take_first(res, len(kb))
-c, res = take_first(res, len(kc))
-d, res = take_first(res, len(kd))
+# a, res = take_first(res, len(ka))
+# b, res = take_first(res, len(kb))
+# c, res = take_first(res, len(kc))
+# d, res = take_first(res, len(kd))
 print("xa", xa)
 print("xb", xb)
 print("xc", xc)  # отрицательные
 print("xd", xd)  # отрицательные
-print("a", a)
-print("b", b)
-print("c", c)
-print("d", d)
-
+# print("a", a)
+# print("b", b)
+# print("c", c)
+# print("d", d)
+k_calc = 0
+k_calc += sum([xi * ki for xi, ki in zip(xa, ka)])
+k_calc += sum([xi * ki for xi, ki in zip(xb, kb)])
+k_calc += sum([xi * ki for xi, ki in zip(xc, kc)])
+k_calc += sum([xi * ki for xi, ki in zip(xd, kd)])
+print("\nk_calc", k_calc)
 
 # X = np.array(np.linspace(0, 4, 50))
 # Y = np.array(np.linspace(0, 4, 50))
