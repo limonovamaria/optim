@@ -1,6 +1,20 @@
+import timeit
+from functools import wraps
+
 import numpy as np
 
 
+def timing(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        start_time = timeit.default_timer()
+        result = f(*args, **kwargs)
+        ellapsed_time = timeit.default_timer() - start_time
+        return result, ellapsed_time
+    return wrapper
+
+
+@timing
 def nelder_mead(f, x0, alpha=1, gamma=2, rho=0.5, sigma=0.5, tol=1e-6, maxiter=1000, dx=1):
     '''
     f - целевая функция
@@ -51,6 +65,8 @@ def nelder_mead(f, x0, alpha=1, gamma=2, rho=0.5, sigma=0.5, tol=1e-6, maxiter=1
         # Проверка условия остановки
         if all([np.linalg.norm(simplex[0] - simplex[i]) < tol for i in range(1, len(simplex))]):
             break
+        else:
+            pass
 
     return simplex[0], iter
 
