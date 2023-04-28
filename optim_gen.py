@@ -17,12 +17,12 @@ def create_func(k_targ, ka, kb, kc, kd, a_min, a_max, b_min, b_max, c_min, c_max
         c, x = take_first(x, len(kc))
         d, x = take_first(x, len(kd))
 
-        k_calc = sum([xi*gi*ki for xi, gi, ki in zip(xa, a, ka)])
-        k_calc += sum([xi*gi*ki for xi, gi, ki in zip(xb, b, kb)])
-        k_calc += sum([xi*gi*ki for xi, gi, ki in zip(xc, c, kc)])
-        k_calc += sum([xi*gi*ki for xi, gi, ki in zip(xd, d, kd)])
+        k_calc = sum([xi * gi * ki for xi, gi, ki in zip(xa, a, ka)])
+        k_calc += sum([xi * gi * ki for xi, gi, ki in zip(xb, b, kb)])
+        k_calc += sum([xi * gi * ki for xi, gi, ki in zip(xc, c, kc)])
+        k_calc += sum([xi * gi * ki for xi, gi, ki in zip(xd, d, kd)])
 
-        f_res = (k_calc-k_targ)**2
+        f_res = (k_calc - k_targ) ** 2
 
         for x in [xa, xb, xc, xd, a, b, c, d]:
             f_res += k * sum([max(-y, 0) ** p for y in x])
@@ -42,6 +42,7 @@ def create_func(k_targ, ka, kb, kc, kd, a_min, a_max, b_min, b_max, c_min, c_max
         # f_res += k * max(-(d_max-(sum([xi*gi for xi, gi in zip(xd, d)]))), 0) ** p
 
         return f_res
+
     return inner_method
 
 
@@ -56,16 +57,17 @@ def create_func_2(k_targ, ka, kb, kc, kd, a_min, a_max, b_min, b_max, c_min, c_m
         xd, x = take_first(x, len(kd))
 
         k_calc = 0
-        k_calc += sum([xi*ki for xi, ki in zip(xa, ka)])
-        k_calc += sum([xi*ki for xi, ki in zip(xb, kb)])
-        k_calc += sum([xi*ki for xi, ki in zip(xc, kc)])
-        k_calc += sum([xi*ki for xi, ki in zip(xd, kd)])
+        k_calc += sum([xi * ki for xi, ki in zip(xa, ka)])
+        k_calc += sum([xi * ki for xi, ki in zip(xb, kb)])
+        k_calc += sum([xi * ki for xi, ki in zip(xc, kc)])
+        k_calc += sum([xi * ki for xi, ki in zip(xd, kd)])
 
+        f_res = (k_calc - k_targ) ** 2
 
-        f_res = (k_calc-k_targ)**2
-
+        # ограничения на неотрицательность
         for xx in [xa, xb, xc, xd]:
             f_res += k * sum([max(-xi, 0) ** p for xi in xx])
+
         # for x in [a, b, c, d]:
         #     f_res += k * sum([max(-y, 0) ** p for y in x])
         # for x in [a, b, c, d]:
@@ -78,7 +80,21 @@ def create_func_2(k_targ, ka, kb, kc, kd, a_min, a_max, b_min, b_max, c_min, c_m
         #         prod *= xi
         #     f_res += prod
 
-        f_res += k * max(-(sum([xi for xi in xa])-a_min), 0) ** p
+        # ИДЕЯ: степень штрафа зависит от нагруженности сервера
+
+        # ограничения на мин/макс каждой группы
+        f_res += k * max(-(sum([xi for xi in xa]) - a_min), 0) ** p
+        f_res += k * max(-(a_max - sum([xi for xi in xa])), 0) ** p
+        f_res += k * max(-(sum([xi for xi in xa]) - b_min), 0) ** p
+        f_res += k * max(-(b_max - sum([xi for xi in xb])), 0) ** p
+        f_res += k * max(-(sum([xi for xi in xc]) - c_min), 0) ** p
+        f_res += k * max(-(c_max - sum([xi for xi in xc])), 0) ** p
+        f_res += k * max(-(sum([xi for xi in xd]) - d_min), 0) ** p
+        f_res += k * max(-(d_max - sum([xi for xi in xd])), 0) ** p
+
+        xb_new = sorted(xb)  # тоже вариант плохо получается
+        if xb_new[-1] < (xb_new[-2] * 10**2):
+            f_res += k
 
         # f_res += k * max(-(sum([xi*gi for xi, gi in zip(xa, a)])-a_min), 0) ** p
         # f_res += k * max(-(sum([xi*gi for xi, gi in zip(xb, b)])-b_min), 0) ** p
@@ -91,6 +107,7 @@ def create_func_2(k_targ, ka, kb, kc, kd, a_min, a_max, b_min, b_max, c_min, c_m
         # f_res += k * max(-(d_max-(sum([xi*gi for xi, gi in zip(xd, d)]))), 0) ** p
 
         return f_res
+
     return inner_method
 
 
@@ -109,16 +126,16 @@ def create_func_2(k_targ, ka, kb, kc, kd, a_min, a_max, b_min, b_max, c_min, c_m
 # c = np.array([0, 0, 0])
 # xd = np.array([0, 0])
 # d = np.array([0, 0])
-
+KKAL_IN_GR = 0.01
 
 # nelder_mead(f, (xa, xb, xc, xd, a, b, c, d))
-ka = [500, 300, 400]
-kb = [200, 200, 300]
-kc = [50, 20]
-kd = [20, 10, 10]
+ka = [k * KKAL_IN_GR for k in [360, 300, 400]]
+kb = [k * KKAL_IN_GR for k in [200, 200, 300, 350]]
+kc = [k * KKAL_IN_GR for k in [50, 20]]
+kd = [k * KKAL_IN_GR for k in [20, 10, 10]]
 k_targ = 2000
 a_min = 50
-a_max = 500
+a_max = 200
 b_min = 50
 b_max = 500
 c_min = 50
@@ -126,19 +143,20 @@ c_max = 500
 d_min = 50
 d_max = 500
 
-
 ff = create_func_2(k_targ, ka, kb, kc, kd, a_min, a_max, b_min, b_max, c_min, c_max, d_min, d_max)
-x0 = np.zeros((len(ka)+len(kb)+len(kc)+len(kd))) #*2
+x0 = np.zeros((len(ka) + len(kb) + len(kc) + len(kd)))  # *2
 
-res, iter = nelder_mead(ff, x0, maxiter=12000, dx=10)
+res, iter = nelder_mead(ff, x0, gamma=2, maxiter=10000, dx=10)
 
 
 def take_first(ar, n):
     return ar[:n], ar[n:]
+
+
 # take_first = lambda ar, n: (ar[:n], ar[n:])
 
 
-print(ff(res), iter)
+print("Ф(x)={a:10.2e}, iterations={b:d}".format(a=ff(res), b=iter))
 xa, res = take_first(res, len(ka))
 xb, res = take_first(res, len(kb))
 xc, res = take_first(res, len(kc))
@@ -147,20 +165,28 @@ xd, res = take_first(res, len(kd))
 # b, res = take_first(res, len(kb))
 # c, res = take_first(res, len(kc))
 # d, res = take_first(res, len(kd))
-print("xa", xa)
-print("xb", xb)
-print("xc", xc)  # отрицательные
-print("xd", xd)  # отрицательные
-# print("a", a)
-# print("b", b)
-# print("c", c)
-# print("d", d)
+# print("xa*100:", "\t".join([str(x*100) for x in xa]))
+# print("xb*100:", "\t".join([str(x*100) for x in xb]))
+
+
+def myprint(**kwargs):
+    for arg_name in kwargs:
+        xx = kwargs[arg_name]
+        print(arg_name, end=':')
+        for x in xx:
+            print("{a:10.2f}".format(a=x), end='')
+        print()
+
+print()
+myprint(xa=xa, xb=xb, xc=xc, xd=xd)
+
 k_calc = 0
 k_calc += sum([xi * ki for xi, ki in zip(xa, ka)])
 k_calc += sum([xi * ki for xi, ki in zip(xb, kb)])
 k_calc += sum([xi * ki for xi, ki in zip(xc, kc)])
 k_calc += sum([xi * ki for xi, ki in zip(xd, kd)])
-print("\nk_calc", k_calc)
+print("\nk_targ={a:12.6f}".format(a=k_targ))
+print("k_calc={a:12.6f}".format(a=k_calc))
 
 # X = np.array(np.linspace(0, 4, 50))
 # Y = np.array(np.linspace(0, 4, 50))
