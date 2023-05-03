@@ -42,19 +42,21 @@ def nelder_mead(f, x0, alpha=1, gamma=2, rho=0.5, sigma=0.5, tol=1e-6, maxiter=1
 
         # Шаг 2: вычисление центра тяжести без худшей точки
         centroid = np.mean(simplex[:-1], axis=0)
+        xl = simplex[0]
 
         # Шаг 3: отражение
         xr = centroid + alpha * (centroid - simplex[-1])
-        if f(simplex[0]) <= f(xr) < f(simplex[-2]):
+        if f(xl) <= f(xr) < f(simplex[-2]):
             simplex[-1] = xr
 
         # Шаг 4: растяжение
-        elif f(xr) < f(simplex[0]):
+        elif f(xr) < f(xl):
             xe = centroid + gamma * (xr - centroid)
             if f(xe) < f(xr):
                 simplex[-1] = xe
             else:
                 simplex[-1] = xr
+
         # Шаг 5: сжатие
         else:
             xc = centroid + rho * (simplex[-1] - centroid)
@@ -63,16 +65,16 @@ def nelder_mead(f, x0, alpha=1, gamma=2, rho=0.5, sigma=0.5, tol=1e-6, maxiter=1
             else:
                 # Шаг 6: глобальное сжатие симплекса к точке с наименьшим значением
                 for i in range(1, len(simplex)):
-                    simplex[i] = simplex[0] + sigma * (simplex[i] - simplex[0])
+                    simplex[i] = xl + sigma * (simplex[i] - xl)
 
         # Проверка условия остановки
         if stop == 'std':
-            if all([np.linalg.norm(simplex[0] - simplex[i]) < tol for i in range(1, len(simplex))]):
+            if all([np.linalg.norm(xl - simplex[i]) < tol for i in range(1, len(simplex))]):
                 break
         elif type(stop) == float:
             # for s in simplex:
                 # print(f(s))
-            if f(simplex[0]) <= stop:
+            if f(xl) <= stop:
                 break
 
     return simplex[0], iter
