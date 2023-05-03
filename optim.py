@@ -1,3 +1,5 @@
+"""Модуль содержит методы оптимизации"""
+
 import timeit
 from functools import wraps
 
@@ -11,11 +13,12 @@ def timing(f):
         result = f(*args, **kwargs)
         ellapsed_time = timeit.default_timer() - start_time
         return result, ellapsed_time
+
     return wrapper
 
 
 @timing
-def nelder_mead(f, x0, alpha=1, gamma=2, rho=0.5, sigma=0.5, tol=1e-6, maxiter=1000, dx=1):
+def nelder_mead(f, x0, alpha=1, gamma=2, rho=0.5, sigma=0.5, tol=1e-6, maxiter=1000, dx=1, stop='std'):
     '''
     f - целевая функция
     x0 - начальная точка
@@ -63,10 +66,13 @@ def nelder_mead(f, x0, alpha=1, gamma=2, rho=0.5, sigma=0.5, tol=1e-6, maxiter=1
                     simplex[i] = simplex[0] + sigma * (simplex[i] - simplex[0])
 
         # Проверка условия остановки
-        if all([np.linalg.norm(simplex[0] - simplex[i]) < tol for i in range(1, len(simplex))]):
-            break
-        else:
-            pass
+        if stop == 'std':
+            if all([np.linalg.norm(simplex[0] - simplex[i]) < tol for i in range(1, len(simplex))]):
+                break
+        elif type(stop) == float:
+            # for s in simplex:
+                # print(f(s))
+            if f(simplex[0]) <= stop:
+                break
 
     return simplex[0], iter
-
