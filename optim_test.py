@@ -71,7 +71,7 @@ ff = create_func(k_targ,
                   b_min, b_max,
                   c_min, c_max,
                   d_min, d_max),
-                 ga, gb, gc, gd,
+                 (ga, gb, gc, gd),
                  penalty=1e1, penalty_power=2)
 x0 = np.zeros((len(ka) + len(kb) + len(kc) + len(kd)))  # *2
 # x0 = np.random.random_sample(len(ka) + len(kb) + len(kc) + len(kd)) * 100

@@ -7,16 +7,21 @@ def take_first(ar, n):
 
 def create_func(food_energy_goal,
                 food_energy_groups,
-                limits_groups,
-                ga, gb, gc, gd,
+                groups_limits,
+                food_limits,
                 penalty=1e3, penalty_power=2):
+    """
+    создаёт функцию, f(x), где x - список граммовок продуктов, f - целевая функция со штрафами
+    """
     def inner_method(x):
         EPS = 1.0  # Значение, ниже которого второй по величине параметр в группе считается подходящим
         # TODO проверку на неодинаковость размерности
 
-        a_min, a_max, b_min, b_max, c_min, c_max, d_min, d_max = limits_groups
+        a_min, a_max, b_min, b_max, c_min, c_max, d_min, d_max = groups_limits
 
         ka, kb, kc, kd = food_energy_groups
+
+        ga, gb, gc, gd = food_limits
 
         xa, x = take_first(x, len(ka))
         xb, x = take_first(x, len(kb))
@@ -38,6 +43,7 @@ def create_func(food_energy_goal,
         # Ограничения на мин. каждой группы
         for xx, mmin in zip([xa, xb, xc, xd], [a_min, b_min, c_min, d_min]):
             f_res += penalty * max(-(sum([xi for xi in xx]) - mmin), 0)**penalty_power
+
         # Ограничения на макс. каждой группы
         for xx, mmax in zip([xa, xb, xc, xd], [a_max, b_max, c_max, d_max]):
             f_res += penalty * max(-(mmax - sum([xi for xi in xx])), 0)**penalty_power
