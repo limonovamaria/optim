@@ -1,6 +1,6 @@
 """Модуль для интеграционного тестирования"""
 
-from optim_gen import create_func, create_func_2, take_first
+from optim_gen import create_func, take_first
 from optim import nelder_mead
 import numpy as np
 
@@ -59,7 +59,7 @@ d_min = 50
 d_max = 500
 
 # 1
-ff = create_func_2(k_targ, ka, kb, kc, kd, a_min, a_max, b_min, b_max, c_min, c_max, d_min, d_max, k=1e1, p=2)
+ff = create_func(k_targ, ka, kb, kc, kd, a_min, a_max, b_min, b_max, c_min, c_max, d_min, d_max, k=1e1, p=2)
 x0 = np.zeros((len(ka) + len(kb) + len(kc) + len(kd)))  # *2
 # x0 = np.random.random_sample(len(ka) + len(kb) + len(kc) + len(kd)) * 100
 (res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=100, stop=400.)
