@@ -55,14 +55,16 @@ def create_func(food_energy_goal,
         for xx, mmax in zip(groupwise(x), group_limits_max):
             f_res += penalty * max(-(mmax - sum(xx)), 0)**penalty_power
 
-        # ограничение на один параметр в группе
-        for xx in groupwise(x):
-            xx_new = sorted(xx)
-            f_res += penalty * max(xx_new[-2] - EPS, 0)**penalty_power
-
         # ограничение на граммовки
         for op in x - food_limits:
             f_res += penalty * max(op, 0)**penalty_power
+
+        # ограничение на один параметр в группе
+        for xx in groupwise(x):
+            if len(xx) <= 1:
+                continue
+            xx_new = sorted(xx)
+            f_res += penalty * max(xx_new[-2] - EPS, 0)**penalty_power
 
         return f_res
 
