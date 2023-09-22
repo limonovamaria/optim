@@ -21,11 +21,9 @@ def create_func(food_energy_goal,
     создаёт функцию, f(x), где x - список граммовок продуктов, f - целевая функция со штрафами
     """
 
-    lens = groups
-
     result = []
     start = 0
-    for i in lens:
+    for i in groups:
         end = start + i
         result.append((start, end))
         start = end
