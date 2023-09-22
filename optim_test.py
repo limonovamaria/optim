@@ -37,12 +37,13 @@ def print_results(res, iter, time):
 KKAL_IN_GR = 0.01
 
 ka = [k * KKAL_IN_GR for k in [68]]
-kb = [k * KKAL_IN_GR for k in [343, 303]]
+kb = [k * KKAL_IN_GR for k in [343, 360]]
 kc = [k * KKAL_IN_GR for k in [170]]
 kd = [k * KKAL_IN_GR for k in [52, 89, 48]]
 ke = [k * KKAL_IN_GR for k in [654, 553]]
 kf = [k * KKAL_IN_GR for k in [259, 366]]
 kg = [k * KKAL_IN_GR for k in [40, 159]]
+kh = [k * KKAL_IN_GR for k in [15, 18]]
 food_energy_targ = 2000
 
 # граммовки продуктов
@@ -53,9 +54,10 @@ gd = [200, 200, 150]
 ge = [40, 50]
 gf = [300, 150]
 gg = [1000, 500]
+gh = [200, 200]
 
-group_limits_min = np.array([50, 50, 50, 50, 50, 50, 50])
-group_limits_max = np.array([500, 500, 500, 500, 500, 500, 500])
+group_limits_min = np.array([50, 50, 50, 50, 10, 10, 50, 50])
+group_limits_max = np.array([200, 200, 300, 200, 30, 30, 200, 150])
 
 food_energy_groups = np.array(ka + kb + kc + kd + ke + kf + kg)
 food_limits = np.array(ga + gb + gc + gd + ge + gf + gg)
