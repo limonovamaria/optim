@@ -16,20 +16,21 @@ def print_arrays(**kwargs):
 
 def print_results(res, iter, time):
     print("\nФ(x)={a:10.2e}, iterations={b:d}, time={c:5.1f}".format(a=ff(res), b=iter, c=time))
+
+    food_energy_calc = 0
+    food_energy_calc += sum(res * food_energy_groups)
+
     xa, res = take_first(res, len(ka))
     xb, res = take_first(res, len(kb))
     xc, res = take_first(res, len(kc))
     xd, res = take_first(res, len(kd))
+    xe, res = take_first(res, len(ke))
+    xf, res = take_first(res, len(kf))
+    xg, res = take_first(res, len(kg))
 
-    print_arrays(xa=xa, xb=xb, xc=xc, xd=xd)
+    print_arrays(xa=xa, xb=xb, xc=xc, xd=xd, xe=xe, xf=xf, xg=xg)
 
-    food_energy_calc = 0
-    food_energy_calc += sum([xi * ki for xi, ki in zip(xa, ka)])
-    food_energy_calc += sum([xi * ki for xi, ki in zip(xb, kb)])
-    food_energy_calc += sum([xi * ki for xi, ki in zip(xc, kc)])
-    food_energy_calc += sum([xi * ki for xi, ki in zip(xd, kd)])
-
-    print("\nk_targ={a:12.6f}".format(a=food_energy_targ))
+    print("k_targ={a:12.6f}".format(a=food_energy_targ))
     print("k_calc={a:12.6f}".format(a=food_energy_calc))
 
 
