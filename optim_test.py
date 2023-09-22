@@ -48,32 +48,45 @@ ka = [k * KKAL_IN_GR for k in [260, 300, 280]]
 kb = [k * KKAL_IN_GR for k in [400, 600, 550, 450]]
 kc = [k * KKAL_IN_GR for k in [50, 20, 30, 23]]
 kd = [k * KKAL_IN_GR for k in [20, 10, 10]]
+ke = [k * KKAL_IN_GR for k in [40, 50]]
 k_targ = 2000
-a_min = 50
-a_max = 200
-b_min = 50
-b_max = 500
-c_min = 50
-c_max = 500
-d_min = 50
-d_max = 500
 
-#граммовки продуктов
+mina = [50 for k in ka]
+maxa = [200 for k in ka]
+minb = [50 for k in kb]
+maxb = [200 for k in kb]
+minc = [50 for k in kc]
+maxc = [200 for k in kc]
+mind = [50 for k in kd]
+maxd = [500 for k in kd]
+mine = [50 for k in ke]
+maxe = [500 for k in ke]
+
+# граммовки продуктов
 ga = [500, 360, 400]
 gb = [500, 360, 400, 200]
 gc = [500, 360, 400, 200]
 gd = [500, 360, 400]
+ge = [500, 360]
+
+group_limits_min = np.array([50, 50, 50, 50, 50])
+group_limits_max = np.array([500, 500, 500, 500, 500])
+
+food_energy_groups = np.array(ka + kb + kc + kd + ke)
+food_limits = np.array(ga + gb + gc + gd + ge)
+
+groups = np.array([len(group) for group in [ka, kb, kc, kd, ke]])
+
 
 # 1
 ff = create_func(k_targ,
-                 (ka, kb, kc, kd),
-                 (a_min, a_max,
-                  b_min, b_max,
-                  c_min, c_max,
-                  d_min, d_max),
-                 (ga, gb, gc, gd),
+                 groups,
+                 food_energy_groups,
+                 group_limits_min,
+                 group_limits_max,
+                 food_limits,
                  penalty=1e1, penalty_power=2)
-x0 = np.zeros((len(ka) + len(kb) + len(kc) + len(kd)))  # *2
+x0 = np.zeros((len(ka) + len(kb) + len(kc) + len(kd) + len(ke)))
 # x0 = np.random.random_sample(len(ka) + len(kb) + len(kc) + len(kd)) * 100
 (res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=100, stop=400.)
 print_results(res, iter, time)
