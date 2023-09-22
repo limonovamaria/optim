@@ -21,72 +21,55 @@ def print_results(res, iter, time):
     xc, res = take_first(res, len(kc))
     xd, res = take_first(res, len(kd))
 
-    # a, res = take_first(res, len(ka))
-    # b, res = take_first(res, len(kb))
-    # c, res = take_first(res, len(kc))
-    # d, res = take_first(res, len(kd))
-    # print("xa*100:", "\t".join([str(x*100) for x in xa]))
-    # print("xb*100:", "\t".join([str(x*100) for x in xb]))
-
-    print()
     print_arrays(xa=xa, xb=xb, xc=xc, xd=xd)
 
-    k_calc = 0
-    k_calc += sum([xi * ki for xi, ki in zip(xa, ka)])
-    k_calc += sum([xi * ki for xi, ki in zip(xb, kb)])
-    k_calc += sum([xi * ki for xi, ki in zip(xc, kc)])
-    k_calc += sum([xi * ki for xi, ki in zip(xd, kd)])
+    food_energy_calc = 0
+    food_energy_calc += sum([xi * ki for xi, ki in zip(xa, ka)])
+    food_energy_calc += sum([xi * ki for xi, ki in zip(xb, kb)])
+    food_energy_calc += sum([xi * ki for xi, ki in zip(xc, kc)])
+    food_energy_calc += sum([xi * ki for xi, ki in zip(xd, kd)])
 
-    print("\nk_targ={a:12.6f}".format(a=k_targ))
-    print("k_calc={a:12.6f}".format(a=k_calc))
+    print("\nk_targ={a:12.6f}".format(a=food_energy_targ))
+    print("k_calc={a:12.6f}".format(a=food_energy_calc))
 
 
 KKAL_IN_GR = 0.01
 
-# nelder_mead(f, (xa, xb, xc, xd, a, b, c, d))
-ka = [k * KKAL_IN_GR for k in [260, 300, 280]]
-kb = [k * KKAL_IN_GR for k in [400, 600, 550, 450]]
-kc = [k * KKAL_IN_GR for k in [50, 20, 30, 23]]
-kd = [k * KKAL_IN_GR for k in [20, 10, 10]]
-ke = [k * KKAL_IN_GR for k in [40, 50]]
-k_targ = 2000
-
-mina = [50 for k in ka]
-maxa = [200 for k in ka]
-minb = [50 for k in kb]
-maxb = [200 for k in kb]
-minc = [50 for k in kc]
-maxc = [200 for k in kc]
-mind = [50 for k in kd]
-maxd = [500 for k in kd]
-mine = [50 for k in ke]
-maxe = [500 for k in ke]
+ka = [k * KKAL_IN_GR for k in [68]]
+kb = [k * KKAL_IN_GR for k in [343, 303]]
+kc = [k * KKAL_IN_GR for k in [170]]
+kd = [k * KKAL_IN_GR for k in [52, 89, 48]]
+ke = [k * KKAL_IN_GR for k in [654, 553]]
+kf = [k * KKAL_IN_GR for k in [259, 366]]
+kg = [k * KKAL_IN_GR for k in [40, 159]]
+food_energy_targ = 2000
 
 # граммовки продуктов
-ga = [500, 360, 400]
-gb = [500, 360, 400, 200]
-gc = [500, 360, 400, 200]
-gd = [500, 360, 400]
-ge = [500, 360]
+ga = [200]
+gb = [300, 200]
+gc = [500]
+gd = [200, 200, 150]
+ge = [40, 50]
+gf = [300, 150]
+gg = [1000, 500]
 
-group_limits_min = np.array([50, 50, 50, 50, 50])
-group_limits_max = np.array([500, 500, 500, 500, 500])
+group_limits_min = np.array([50, 50, 50, 50, 50, 50, 50])
+group_limits_max = np.array([500, 500, 500, 500, 500, 500, 500])
 
-food_energy_groups = np.array(ka + kb + kc + kd + ke)
-food_limits = np.array(ga + gb + gc + gd + ge)
+food_energy_groups = np.array(ka + kb + kc + kd + ke + kf + kg)
+food_limits = np.array(ga + gb + gc + gd + ge + gf + gg)
 
-groups = np.array([len(group) for group in [ka, kb, kc, kd, ke]])
-
+groups = np.array([len(group) for group in [ka, kb, kc, kd, ke, kf, kg]])
 
 # 1
-ff = create_func(k_targ,
+ff = create_func(food_energy_targ,
                  groups,
                  food_energy_groups,
                  group_limits_min,
                  group_limits_max,
                  food_limits,
                  penalty=1e1, penalty_power=2)
-x0 = np.zeros((len(ka) + len(kb) + len(kc) + len(kd) + len(ke)))
+x0 = np.zeros((len(ka) + len(kb) + len(kc) + len(kd) + len(ke) + len(kf) + len(kg)))
 # x0 = np.random.random_sample(len(ka) + len(kb) + len(kc) + len(kd)) * 100
 (res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=100, stop=400.)
 print_results(res, iter, time)
