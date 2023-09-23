@@ -35,7 +35,7 @@ def print_results(res, iter, time):
             print(": {a:10.2f}".format(a=xxx), end='')
         print()
 
-    print("k_targ={a:12.6f}".format(a=food_energy_goal))
+    print("k_goal={a:12.6f}".format(a=food_energy_goal))
     print("k_calc={a:12.6f}".format(a=food_energy_calc))
 
 
