@@ -9,11 +9,9 @@ app = Flask(__name__)
 def get_optim_solu():
     data = request.get_json()
     food_energy_goal = data['food_energy_goal']
-    value2 = data['value2']
 
-
+    # калорийности продуктов (необходимо получить из БД с размерностью ккал/гр)
     KKAL_IN_GR = 0.01
-
     ka = [k * KKAL_IN_GR for k in [68]]
     kb = [k * KKAL_IN_GR for k in [343, 360]]
     kc = [k * KKAL_IN_GR for k in [170]]
@@ -23,7 +21,7 @@ def get_optim_solu():
     kg = [k * KKAL_IN_GR for k in [40, 159]]
     kh = [k * KKAL_IN_GR for k in [15, 18]]
 
-    # граммовки продуктов
+    # граммовки продуктов (необходимо получить из БД с размерностью гр)
     ga = [200]
     gb = [300, 200]
     gc = [500]
@@ -33,8 +31,12 @@ def get_optim_solu():
     gg = [1000, 500]
     gh = [200, 200]
 
-    group_limits_min = np.array([50, 50, 50, 50, 10, 10, 50, 50])
-    group_limits_max = np.array([200, 200, 300, 200, 30, 30, 200, 150])
+    # ограничения на холодильник (необходимо получить из БД с размерностью гр)
+    limits_min = [50, 50, 50, 50, 10, 10, 50, 50]
+    limits_max = [200, 200, 300, 200, 30, 30, 200, 150]
+
+    group_limits_min = np.array(limits_min)
+    group_limits_max = np.array(limits_max)
 
     food_energy_groups = np.array(ka + kb + kc + kd + ke + kf + kg + kh)
     food_limits = np.array(ga + gb + gc + gd + ge + gf + gg + gh)
@@ -49,7 +51,7 @@ def get_optim_solu():
                      food_limits,
                      penalty=1e1, penalty_power=2)
     x0 = np.zeros(len(food_energy_groups))
-    # x0 = np.random.random_sample(len(ka) + len(kb) + len(kc) + len(kd)) * 100
+
     (res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=10)
 
     return jsonify({'result': res.tolist()})

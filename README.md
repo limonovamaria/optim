@@ -8,5 +8,5 @@
 
 - json_server - сервер на Flask, принимающий json over http запрос и обрабатывающий его
 
-обратиться к серверу можно с помощью curl
-curl -X POST -H "Content-Type: application/json" -d '{"value1": 4445, "value2": 10}' http://localhost:5000/sum
+обратиться к серверу можно с помощью curl:
+curl -X POST -H "Content-Type: application/json" -d '{"food_energy_goal": 2000}' http://localhost:5000/optim  
