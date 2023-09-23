@@ -8,9 +8,9 @@ app = Flask(__name__)
 @app.route('/optim', methods=['POST'])
 def get_optim_solu():
     data = request.get_json()
-    value1 = data['value1']
+    food_energy_goal = data['food_energy_goal']
     value2 = data['value2']
-    result = value1 + value2
+
 
     KKAL_IN_GR = 0.01
 
@@ -22,7 +22,6 @@ def get_optim_solu():
     kf = [k * KKAL_IN_GR for k in [259, 366]]
     kg = [k * KKAL_IN_GR for k in [40, 159]]
     kh = [k * KKAL_IN_GR for k in [15, 18]]
-    food_energy_targ = 2000
 
     # граммовки продуктов
     ga = [200]
@@ -42,7 +41,7 @@ def get_optim_solu():
 
     groups = np.array([len(group) for group in [ka, kb, kc, kd, ke, kf, kg, kh]])
 
-    ff = create_func(food_energy_targ,
+    ff = create_func(food_energy_goal,
                      groups,
                      food_energy_groups,
                      group_limits_min,
@@ -53,7 +52,7 @@ def get_optim_solu():
     # x0 = np.random.random_sample(len(ka) + len(kb) + len(kc) + len(kd)) * 100
     (res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=10)
 
-    return jsonify({'result': iter})
+    return jsonify({'result': res.tolist()})
 
 
 @app.route('/sum', methods=['POST'])
