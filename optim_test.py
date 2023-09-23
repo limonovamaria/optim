@@ -30,16 +30,16 @@ def print_results(res, iter, time):
 
     for xx in groupwise(res):
         letter = reverse_alphabet.pop()
-        print(letter, end='')
+        print(letter + ":", end='')
         for xxx in xx:
-            print(": {a:10.2f}".format(a=xxx), end='')
+            print("{a:10.2f}".format(a=xxx), end='')
         print()
 
     print("k_goal={a:12.6f}".format(a=food_energy_goal))
     print("k_calc={a:12.6f}".format(a=food_energy_calc))
 
 
-food_energy_goal = 2000
+food_energy_goal = 3000
 
 KKAL_IN_GR = 0.01
 food_energy_groups = [
@@ -80,30 +80,44 @@ ff = create_func(food_energy_goal,
                  food_limits_array,
                  penalty=1e1, penalty_power=2)
 x0 = np.zeros(len(food_energy_groups_array))
-# x0 = np.random.random_sample(len(food_energy_groups)) * 100
-# (res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=100, stop=400.)
-# print_results(res, iter, time)
-#
-# # 2
-# (res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=10, stop=400.)
-# print_results(res, iter, time)
-#
-# # 3
-# (res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=1, stop=400.)
-# print_results(res, iter, time)
-#
-# (res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=100)
-# print_results(res, iter, time)
 
-# 2
+(res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=100, stop=400.)
+print_results(res, iter, time)
+
+(res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=10, stop=400.)
+print_results(res, iter, time)
+
+(res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=1, stop=400.)
+print_results(res, iter, time)
+
+(res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=100)
+print_results(res, iter, time)
+
 (res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=10)
 print_results(res, iter, time)
 
-# 3
-# (res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=1)
-# print_results(res, iter, time)
+(res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=1)
+print_results(res, iter, time)
 
+x0 = np.random.random_sample(len(food_energy_groups_array)) * 100
 
+(res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=100, stop=400.)
+print_results(res, iter, time)
+
+(res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=10, stop=400.)
+print_results(res, iter, time)
+
+(res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=1, stop=400.)
+print_results(res, iter, time)
+
+(res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=100)
+print_results(res, iter, time)
+
+(res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=10)
+print_results(res, iter, time)
+
+(res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=1)
+print_results(res, iter, time)
 
 
 # X = np.array(np.linspace(0, 4, 50))
