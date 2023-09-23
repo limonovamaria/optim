@@ -5,6 +5,10 @@ import numpy as np
 app = Flask(__name__)
 
 
+def flatten(list_of_lists):
+    return [item for sublist in list_of_lists for item in sublist]
+
+
 @app.route('/optim', methods=['POST'])
 def get_optim_solu():
     data = request.get_json()
@@ -12,24 +16,26 @@ def get_optim_solu():
 
     # калорийности продуктов (необходимо получить из БД с размерностью ккал/гр)
     KKAL_IN_GR = 0.01
-    ka = [k * KKAL_IN_GR for k in [68]]
-    kb = [k * KKAL_IN_GR for k in [343, 360]]
-    kc = [k * KKAL_IN_GR for k in [170]]
-    kd = [k * KKAL_IN_GR for k in [52, 89, 48]]
-    ke = [k * KKAL_IN_GR for k in [654, 553]]
-    kf = [k * KKAL_IN_GR for k in [259, 366]]
-    kg = [k * KKAL_IN_GR for k in [40, 159]]
-    kh = [k * KKAL_IN_GR for k in [15, 18]]
+    food_energy_groups = [
+        [k * KKAL_IN_GR for k in [68]],
+        [k * KKAL_IN_GR for k in [343, 360]],
+        [k * KKAL_IN_GR for k in [170]],
+        [k * KKAL_IN_GR for k in [52, 89, 48]],
+        [k * KKAL_IN_GR for k in [654, 553]],
+        [k * KKAL_IN_GR for k in [259, 366]],
+        [k * KKAL_IN_GR for k in [40, 159]],
+        [k * KKAL_IN_GR for k in [15, 18]]]
 
     # граммовки продуктов (необходимо получить из БД с размерностью гр)
-    ga = [200]
-    gb = [300, 200]
-    gc = [500]
-    gd = [200, 200, 150]
-    ge = [40, 50]
-    gf = [300, 150]
-    gg = [1000, 500]
-    gh = [200, 200]
+    food_quantity_groups = [
+        [200],
+        [300, 200],
+        [500],
+        [200, 200, 150],
+        [40, 50],
+        [300, 150],
+        [1000, 500],
+        [200, 200]]
 
     # ограничения на холодильник (необходимо получить из БД с размерностью гр)
     limits_min = [50, 50, 50, 50, 10, 10, 50, 50]
@@ -38,32 +44,23 @@ def get_optim_solu():
     group_limits_min = np.array(limits_min)
     group_limits_max = np.array(limits_max)
 
-    food_energy_groups = np.array(ka + kb + kc + kd + ke + kf + kg + kh)
-    food_limits = np.array(ga + gb + gc + gd + ge + gf + gg + gh)
+    food_energy_groups_array = np.array(flatten(food_energy_groups))
+    food_limits_array = np.array(flatten(food_quantity_groups))
 
-    groups = np.array([len(group) for group in [ka, kb, kc, kd, ke, kf, kg, kh]])
+    groups_array = np.array([len(group) for group in food_energy_groups])
 
     ff = create_func(food_energy_goal,
-                     groups,
-                     food_energy_groups,
+                     groups_array,
+                     food_energy_groups_array,
                      group_limits_min,
                      group_limits_max,
-                     food_limits,
+                     food_limits_array,
                      penalty=1e1, penalty_power=2)
-    x0 = np.zeros(len(food_energy_groups))
+    x0 = np.zeros(len(food_energy_groups_array))
 
     (res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=10)
 
     return jsonify({'result': res.tolist()})
-
-
-@app.route('/sum', methods=['POST'])
-def sum_two_values():
-    data = request.get_json()
-    value1 = data['value1']
-    value2 = data['value2']
-    result = value1 + value2
-    return jsonify({'result': result})
 
 
 if __name__ == '__main__':
