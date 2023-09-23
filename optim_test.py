@@ -39,7 +39,7 @@ def print_results(res, iter, time):
     print("k_calc={a:12.6f}".format(a=food_energy_calc))
 
 
-food_energy_goal = 3000
+food_energy_goal = 2000
 
 KKAL_IN_GR = 0.01
 food_energy_groups = [
