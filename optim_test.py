@@ -1,6 +1,6 @@
 """Модуль для интеграционного тестирования"""
 
-from optim_gen import create_func, take_first
+from optim import create_func, take_first
 from optim import nelder_mead
 import numpy as np
 
@@ -72,29 +72,29 @@ ff = create_func(food_energy_targ,
                  group_limits_max,
                  food_limits,
                  penalty=1e1, penalty_power=2)
-x0 = np.zeros((len(ka) + len(kb) + len(kc) + len(kd) + len(ke) + len(kf) + len(kg)))
+x0 = np.zeros(len(food_energy_groups))
 # x0 = np.random.random_sample(len(ka) + len(kb) + len(kc) + len(kd)) * 100
 (res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=100, stop=400.)
 print_results(res, iter, time)
 
 # 2
-(res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=10, stop=400.)
-print_results(res, iter, time)
-
-# 3
-(res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=1, stop=400.)
-print_results(res, iter, time)
-
-(res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=100)
-print_results(res, iter, time)
-
-# 2
-(res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=10)
-print_results(res, iter, time)
-
-# 3
-(res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=1)
-print_results(res, iter, time)
+# (res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=10, stop=400.)
+# print_results(res, iter, time)
+#
+# # 3
+# (res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=1, stop=400.)
+# print_results(res, iter, time)
+#
+# (res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=100)
+# print_results(res, iter, time)
+#
+# # 2
+# (res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=10)
+# print_results(res, iter, time)
+#
+# # 3
+# (res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=1)
+# print_results(res, iter, time)
 
 
 
