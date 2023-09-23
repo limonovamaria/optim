@@ -27,8 +27,9 @@ def print_results(res, iter, time):
     xe, res = take_first(res, len(ke))
     xf, res = take_first(res, len(kf))
     xg, res = take_first(res, len(kg))
+    xh, res = take_first(res, len(kh))
 
-    print_arrays(xa=xa, xb=xb, xc=xc, xd=xd, xe=xe, xf=xf, xg=xg)
+    print_arrays(xa=xa, xb=xb, xc=xc, xd=xd, xe=xe, xf=xf, xg=xg, xh=xh)
 
     print("k_targ={a:12.6f}".format(a=food_energy_targ))
     print("k_calc={a:12.6f}".format(a=food_energy_calc))
@@ -59,10 +60,10 @@ gh = [200, 200]
 group_limits_min = np.array([50, 50, 50, 50, 10, 10, 50, 50])
 group_limits_max = np.array([200, 200, 300, 200, 30, 30, 200, 150])
 
-food_energy_groups = np.array(ka + kb + kc + kd + ke + kf + kg)
-food_limits = np.array(ga + gb + gc + gd + ge + gf + gg)
+food_energy_groups = np.array(ka + kb + kc + kd + ke + kf + kg + kh)
+food_limits = np.array(ga + gb + gc + gd + ge + gf + gg + gh)
 
-groups = np.array([len(group) for group in [ka, kb, kc, kd, ke, kf, kg]])
+groups = np.array([len(group) for group in [ka, kb, kc, kd, ke, kf, kg, kh]])
 
 # 1
 ff = create_func(food_energy_targ,
@@ -73,28 +74,28 @@ ff = create_func(food_energy_targ,
                  food_limits,
                  penalty=1e1, penalty_power=2)
 x0 = np.zeros(len(food_energy_groups))
-# x0 = np.random.random_sample(len(ka) + len(kb) + len(kc) + len(kd)) * 100
+# x0 = np.random.random_sample(len(food_energy_groups)) * 100
 (res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=100, stop=400.)
 print_results(res, iter, time)
 
 # 2
-# (res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=10, stop=400.)
-# print_results(res, iter, time)
-#
-# # 3
-# (res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=1, stop=400.)
-# print_results(res, iter, time)
-#
-# (res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=100)
-# print_results(res, iter, time)
-#
-# # 2
-# (res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=10)
-# print_results(res, iter, time)
-#
-# # 3
-# (res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=1)
-# print_results(res, iter, time)
+(res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=10, stop=400.)
+print_results(res, iter, time)
+
+# 3
+(res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=1, stop=400.)
+print_results(res, iter, time)
+
+(res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=100)
+print_results(res, iter, time)
+
+# 2
+(res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=10)
+print_results(res, iter, time)
+
+# 3
+(res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=1)
+print_results(res, iter, time)
 
 
 

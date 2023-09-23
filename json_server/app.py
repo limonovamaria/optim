@@ -1,6 +1,5 @@
 from flask import Flask, request, jsonify
-from optim.optim_gen import create_func
-from optim import nelder_mead
+from optim import create_func, nelder_mead
 import numpy as np
 
 app = Flask(__name__)
@@ -38,10 +37,10 @@ def get_optim_solu():
     group_limits_min = np.array([50, 50, 50, 50, 10, 10, 50, 50])
     group_limits_max = np.array([200, 200, 300, 200, 30, 30, 200, 150])
 
-    food_energy_groups = np.array(ka + kb + kc + kd + ke + kf + kg)
-    food_limits = np.array(ga + gb + gc + gd + ge + gf + gg)
+    food_energy_groups = np.array(ka + kb + kc + kd + ke + kf + kg + kh)
+    food_limits = np.array(ga + gb + gc + gd + ge + gf + gg + gh)
 
-    groups = np.array([len(group) for group in [ka, kb, kc, kd, ke, kf, kg]])
+    groups = np.array([len(group) for group in [ka, kb, kc, kd, ke, kf, kg, kh]])
 
     ff = create_func(food_energy_targ,
                      groups,
@@ -50,11 +49,11 @@ def get_optim_solu():
                      group_limits_max,
                      food_limits,
                      penalty=1e1, penalty_power=2)
-    x0 = np.zeros((len(ka) + len(kb) + len(kc) + len(kd) + len(ke) + len(kf) + len(kg)))
+    x0 = np.zeros(len(food_energy_groups))
     # x0 = np.random.random_sample(len(ka) + len(kb) + len(kc) + len(kd)) * 100
-    (res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=100, stop=400.)
+    (res, iter), time = nelder_mead(ff, x0, gamma=2, maxiter=20000, dx=10)
 
-    return jsonify({'result': res})
+    return jsonify({'result': iter})
 
 
 @app.route('/sum', methods=['POST'])
