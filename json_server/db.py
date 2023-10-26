@@ -1,9 +1,8 @@
 import sqlite3
-import numpy
 
 connection = sqlite3.connect('my_database.db')
 cursor = connection.cursor()
-"""""
+
 cursor.execute('''
 CREATE TABLE IF NOT EXISTS User (
 login TEXT PRIMARY KEY,
@@ -71,7 +70,6 @@ FOREIGN KEY (refrigerator_id) REFERENCES refrigerator
 )
 ''')
 
-
 cursor.execute('INSERT INTO User (login, password) VALUES (?, ?)', ('admin', '123'))
 cursor.execute('INSERT INTO person (id, name, surname, age, height, weight, activity_level, sex, user_login) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', (1, 'Мария', 'Лимонова', 21, 164, 48, 2, 0, 'admin'))
 cursor.execute('INSERT INTO refrigerator (id, person_id) VALUES (?, ?)', (1, 1))
@@ -93,7 +91,6 @@ cursor.execute('INSERT INTO limits (min, max, categories_id) VALUES (?, ?, ?)', 
 cursor.execute('INSERT INTO limits (min, max, categories_id) VALUES (?, ?, ?)', (10, 30, 6))
 cursor.execute('INSERT INTO limits (min, max, categories_id) VALUES (?, ?, ?)', (50, 200, 7))
 cursor.execute('INSERT INTO limits (min, max, categories_id) VALUES (?, ?, ?)', (50, 150, 8))
-
 
 cursor.execute('INSERT INTO product (id, name, caloricity, categories_id) VALUES (?, ?, ?, ?)', (1, 'Овсянка', 68, 1))
 cursor.execute('INSERT INTO product (id, name, caloricity, categories_id) VALUES (?, ?, ?, ?)', (2, 'Греча', 343, 2))
@@ -127,78 +124,5 @@ cursor.execute('INSERT INTO refrigerator_has_product (refrigerator_id, product_i
 cursor.execute('INSERT INTO refrigerator_has_product (refrigerator_id, product_id, amount) VALUES (?, ?, ?)', (1, 14, 200))
 cursor.execute('INSERT INTO refrigerator_has_product (refrigerator_id, product_id, amount) VALUES (?, ?, ?)', (1, 15, 200))
 
-"""""
-"""""
-1. заполнить таблицы
-2. написать процедуру
-#cursor.execute('INSERT INTO Users (username, email, age) VALUES (?, ?, ?)', ('newuser1', 'newuser1@example.com', 28))
-#cursor.execute('INSERT INTO Users (username, email, age) VALUES (?, ?, ?)', ('newuser2', 'newuser2@example.com', 29))
-#cursor.execute('INSERT INTO Users (username, email, age) VALUES (?, ?, ?)', ('newuser3', 'newuser3@example.com', 22))
-#cursor.execute('SELECT * FROM Users')
-users = cursor.fetchall()
-
-# Выводим результаты
-#for user in users:
-#  print(user)
-cursor.execute('SELECT username FROM Users where age = ?', (28,))
-usernames = cursor.fetchall()
-username = " "
-for user in usernames:
-    print(user)
-
-connection.commit()
-connection.close()
-
-cursor.execute('SELECT min FROM limits')
-limits_min = cursor.fetchall()
-min = numpy.zeros(8)
-k = 0
-for x in limits_min:
-    min[k] = x[0]
-    k = k + 1
-print(min)
-
-cursor.execute('SELECT max FROM limits')
-limits_min = cursor.fetchall()
-max = numpy.zeros(8)
-k = 0
-for x in limits_min:
-    max[k] = x[0]
-    k = k + 1
-print(max)
-connection.commit()
-connection.close()
-
-
-ref_id = 1
-cursor.execute('SELECT refrigerator_id, product_id, caloricity, categories_id FROM refrigerator_has_product JOIN  product WHERE product_id = id AND refrigerator_id = ?', (ref_id,))
-groups = cursor.fetchall()
-
-a = []
-for i in range(1, 9):
-    b = []
-    for x in groups:
-        if(x[3] == i):
-            b = numpy.append(b, x[2])
-    a.append(b)
-for k in a:
-    for i in range(0, len(k)):
-        k[i] = k[i] * 0.001
-
-print(a)
-
-ref_id = 1
-cursor.execute('SELECT refrigerator_id, product_id, amount, categories_id FROM refrigerator_has_product JOIN  product WHERE product_id = id AND refrigerator_id = ?', (ref_id,))
-groups = cursor.fetchall()
-a = []
-for i in range(1, 9):
-    b = []
-    for x in groups:
-        if(x[3] == i):
-            b = numpy.append(b, x[2])
-    a.append(b)
-
-print(a)
-"""""
 connection.commit()
 connection.close()
