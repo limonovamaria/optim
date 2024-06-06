@@ -2,6 +2,28 @@ import sqlite3
 
 connection = sqlite3.connect('my_database.db')
 cursor = connection.cursor()
+cursor.execute('''
+DROP TABLE User
+''')
+cursor.execute('''
+DROP TABLE person
+''')
+cursor.execute('''
+DROP TABLE refrigerator
+''')
+cursor.execute('''
+DROP TABLE categories
+''')
+cursor.execute('''
+DROP TABLE limits
+''')
+cursor.execute('''
+DROP TABLE product
+''')
+cursor.execute('''
+DROP TABLE refrigerator_has_product
+''')
+
 
 cursor.execute('''
 CREATE TABLE IF NOT EXISTS User (
