@@ -12,7 +12,7 @@ app = Flask(__name__)
 def flatten(list_of_lists):
     return [item for sublist in list_of_lists for item in sublist]
 
-@app.route('/optim', methods=['POST'])
+@app.route('/optim_bak', methods=['POST'])
 def get_optim_solu_test():
     data = {
         "isResult": True,
@@ -141,7 +141,7 @@ def get_optim_solu_test():
     return jsonify(data)
 
 
-@app.route('/optim_bak', methods=['POST'])
+@app.route('/optim', methods=['POST'])
 def get_optim_solu():
 
     #connection = sqlite3.connect('my_database.db')
@@ -240,32 +240,27 @@ def get_optim_solu():
     snack = []
 
     k = 0
+
     for name in names:
-        jsonList.append({"id": name[0], "product_name": name[1], "category_id": name[2], "weight": res[k], "weight_for_one": name[3], "caloricity":name[4]})
-        if (name[2] == 1 and res[k]>15):
+        if (name[2]==1 and res[k]>15):
             breakfast.append({"id": name[0], "product_name": name[1], "category_id": name[2], "weight": res[k], "weight_for_one": name[3], "caloricity":name[4]})
-        elif ((name[2] == 4 or name[2] == 5 or name[2] == 6) and res[k]>15):
-            breakfast.append({"id": name[0], "product_name": name[1], "category_id": name[2], "weight": res[k]/3, "weight_for_one": name[3], "caloricity":name[4]})
+        elif ((name[2]==2 or name[2]==3) and res[k]>15):
+            lunch.append({"id": name[0], "product_name": name[1], "category_id": name[2], "weight": res[k],"weight_for_one": name[3], "caloricity": name[4]})
+        elif ((name[2]==4 or name[2]==5) and res[k]>15):
+            breakfast.append({"id": name[0], "product_name": name[1], "category_id": name[2], "weight": res[k] / 3,"weight_for_one": name[3], "caloricity": name[4]})
+            dinner.append({"id": name[0], "product_name": name[1], "category_id": name[2], "weight": res[k] / 3, "weight_for_one": name[3], "caloricity": name[4]})
+            snack.append({"id": name[0], "product_name": name[1], "category_id": name[2], "weight": res[k] / 3, "weight_for_one": name[3], "caloricity": name[4]})
+        elif (name[2]==6 and res[k]>15):
+            breakfast.append({"id": name[0], "product_name": name[1], "category_id": name[2], "weight": res[k] / 3, "weight_for_one": name[3], "caloricity": name[4]})
+            lunch.append({"id": name[0], "product_name": name[1], "category_id": name[2], "weight": res[k] / 3, "weight_for_one": name[3], "caloricity": name[4]})
+            dinner.append({"id": name[0], "product_name": name[1], "category_id": name[2], "weight": res[k] / 3,"weight_for_one": name[3], "caloricity": name[4]})
+        elif (name[2]==7 and res[k]>15):
+            dinner.append({"id": name[0], "product_name": name[1], "category_id": name[2], "weight": res[k],"weight_for_one": name[3], "caloricity": name[4]})
+        elif (name[2]==8 and res[k]>15):
+            lunch.append({"id": name[0], "product_name": name[1], "category_id": name[2], "weight": res[k],"weight_for_one": name[3], "caloricity": name[4]})
         k = k + 1
-    k = 0
-    for name in names:
-        if (name[2] == 6 and res[k]>15):
-            lunch.append({"id": name[0], "product_name": name[1], "category_id": name[2], "weight": res[k] / 3, "weight_for_one": name[3], "caloricity":name[4]})
-        elif ((name[2] == 3 or name[2] == 2 or name[2] == 8) and res[k]>15):
-            lunch.append({"id": name[0], "product_name": name[1], "category_id": name[2], "weight": res[k], "weight_for_one": name[3], "caloricity":name[4]})
-        k = k + 1
-    k = 0
-    for name in names:
-        if (name[2] == 7 and res[k]>15):
-            dinner.append({"id": name[0], "product_name": name[1], "category_id": name[2], "weight": res[k], "weight_for_one": name[3], "caloricity":name[4]})
-        elif ((name[2] == 4 or name[2] == 5 or name[2] == 6) and res[k]>15):
-            dinner.append({"id": name[0], "product_name": name[1], "category_id": name[2], "weight": res[k] / 3, "weight_for_one": name[3], "caloricity":name[4]})
-        k = k + 1
-    k = 0
-    for name in names:
-        if ((name[2] == 4 or name[2] == 5) and res[k]>15):
-            snack.append({"id": name[0], "product_name": name[1], "category_id": name[2], "weight": res[k] / 3, "weight_for_one": name[3], "caloricity":name[4]})
-        k = k + 1
+
+
 
     isResult = False
     for grs in res:
